@@ -47,10 +47,15 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    width: '100%',
+    textAlign: 'center',
+    // width: '100%',
     // background: 'linear-gradient(45deg, #e0f7fa, #b2dfdb)',
     backgroundColor: theme.palette.background.default,
     fontColor: theme.palette.blue,
+    backgroundImage: `url(${process.env.PUBLIC_URL + '/assets/Airplane22.png'})`,
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat'
   },
   paper: {
     padding: theme.spacing(1),
@@ -116,7 +121,7 @@ export default function ScrollableTabsButtonForce() {
                   horizontal: 'right',
                 }}
                 keepMounted
-                transformOrigin={{
+                transformOrigin={{ 
                   vertical: 'top',
                   horizontal: 'right',
                 }}
@@ -130,7 +135,7 @@ export default function ScrollableTabsButtonForce() {
         </Tabs>
         
       </AppBar>
-      <TabPanel className={classes.paper} value={selectedTab} index={0} >
+      <TabPanel className={classes.root} value={selectedTab} index={0} >
         <HomeComp />
       </TabPanel>
 

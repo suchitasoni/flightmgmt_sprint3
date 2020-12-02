@@ -7,7 +7,7 @@ class AboutComp extends React.Component{
     
     render() {
         return(
-            <div>
+            <div >
                 <h2>About Us</h2>
         <p ><b>EaseMyFlight</b> is a travel correlation web portal that gives you a chance to discover cheap flights tickets on the web. 
         Regardless of whether you're going is just a tick away! You can look at flight tolls, from all the best web travel destinations in a single area. 

@@ -8,8 +8,8 @@ import { BrowserRouter,Route, Redirect, Switch } from 'react-router-dom';
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/home" component={App} />
-      <Redirect from="/" to="/home" />
+      <Route path="" component={App} />
+      {/* <Redirect from="/" to="/home" /> */}
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')
