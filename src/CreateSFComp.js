@@ -1,157 +1,248 @@
-// import React, { Component } from 'react'
-// import ScheduleService from './ScheduleService';
-// import { withRouter } from "react-router";
+import React, {Component} from 'react';
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import ScheduleService from "./ScheduleService";
+import { withRouter } from "react-router";
+import moment from 'moment';
 
-// class CreateSFComp extends Component {
-//     constructor(props) {
-//         super(props)
+class CreateSFComp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        scheduledFlight : {
+            entryNo: this.props.match.params.entryNo,
+            flight: {
+                flightId: '',
+                carrierName: '',
+                flightModel: '',
+                seatCapacity: ''
+            },
+            availableSeats: '',
+            schedule: {
+                sourceAirport: {
+                    airportId: '',
+                    airportName: '',
+                    airportLocation: ''
+                },
+                destinationAirport: {
+                    airportId1: '',
+                    airportName1: '',
+                    airportLocation1: ''
+                },
+                arrivalTime: '',
+                departureTime: '',
+                arrivalDate: ''
+            },
+            fares: ''
+}
+,
+    }
+    this.onSubmit = this.onSubmit.bind(this);
+    this.validate = this.validate.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+  validate(values) {
+    // let errors = {airportName: 'Airport Name should be Alphabetical', airportLocation: 'Airport Location should be Alphabetical'}
+    let errors = {}
+    // const letters = /^[A-Za-z]+$/;
+    const letters = /^[A-Za-z ]+$/;
+    if (!values.sourceAirport) {
+      errors.sourceAirport = 'Enter a description'
+    } else if (!values.sourceAirport.match(letters)) {
+      errors.sourceAirport = 'Sorry! Airport name should be alphabetical, please try again!'
+    }
+    if (!values.destinationAirport) {
+      errors.destinationAirport = 'Enter a description'
+    } else if (!values.destinationAirport.match(letters)) {
+      errors.destinationAirport = 'Sorry! Airport Location should be alphabetical, please try again!'
+    }
+    return errors
+  }
+//   onSubmit(values) {
+//       let scheduledF = {
+//         entryNo: this.state.scheduledFlight.entryNo,
+//         flightId: values.flightId,
+//         carrierName: values.carrierName,
+//         flightModel: values.flightModel, 
+//         seatCapacity: values.seatCapacity,
+//         availableSeats: values.availableSeats,
+//         airportId: values.airportId,
+//         airportName: values.airportName,
+//         airportLocation: values.airportLocation,
 
-//         this.state = {
-//             // step 2
-//             entryNo: 0,
-//             flightModel: '',
-//             sourceAirport: '',
-//             destinationAirport: '',
-//             arrivalTime: '',
-//             departureTime:'',
-//             arrivalDate:''
-//         }
-//         this.changeFlightModelHandler = this.changeFlightModelHandler.bind(this);
-//         this.changeSourceAirHandler = this.changeSourceAirHandler.bind(this);
-//         this.changeDestAirHandler = this.changeDestAirHandler.bind(this);
-//         this.changeArrivalTimeHandler = this.changeArrivalTimeHandler.bind(this);
-//         this.changeDeptTimerHandler = this.changeDeptTimerHandler.bind(this);
-//         this.changeArrivalDateHandler = this.changeArrivalDateHandler.bind(this);
+//         destinationAirport: values.destinationAirport, 
+//         arrivalTime: values.arrivalTime,
+//         departureTime: values.departureTime, 
+//         arrivalDate: values.arrivalDate,
+//         fares: values.fares
+//       }
+//   }
 
-//         this.saveOrUpdateSF = this.saveOrUpdateSF.bind(this);
-//     }
+onSubmit(e){
+    let scheduledF = {
 
-//     // step 3
-//     componentDidMount(){
+        entryNo: this.state.scheduledFlight.entryNo,
+            flight: {
+                flightId: this.state.scheduledFlight.flight.flightId,
+                carrierName: this.state.scheduledFlight.flight.carrierName,
+                flightModel: this.state.scheduledFlight.flight.flightModel,
+                seatCapacity: this.state.scheduledFlight.flight.seatCapacity
+            },
+            availableSeats: this.state.scheduledFlight.availableSeats,
+            schedule: {
+                sourceAirport: {
+                    airportId: this.state.scheduledFlight.schedule.sourceAirport.airportId,
+                    airportName: this.state.scheduledFlight.schedule.sourceAirport.airportName,
+                    airportLocation: this.state.scheduledFlight.schedule.sourceAirport.airportLocation
+                },
+                destinationAirport: {
+                    airportId1: this.state.scheduledFlight.schedule.destinationAirport.airportId,
+                    airportName1: this.state.scheduledFlight.schedule.destinationAirport.airportName,
+                    airportLocation1: this.state.scheduledFlight.schedule.destinationAirport.airportLocation
+                },
+                arrivalTime: this.state.scheduledFlight.schedule.arrivalTime,
+                departureTime: this.state.scheduledFlight.schedule.departureTime,
+                arrivalDate: this.state.scheduledFlight.schedule.arrivalDate
+            },
+            fares: this.state.scheduledFlight.fares
+        // entryNo: this.state.entryNo,
+        // flightId: this.state.flightId,
+        // carrierName: this.state.carrierName,
+        // flightModel: this.state.flightModel, 
+        // seatCapacity: this.state.seatCapacity,
+        // availableSeats: this.state.availableSeats,
+        // airportId: this.state.airportId,
+        // airportName: this.state.airportName,
+        // airportLocation: this.state.airportLocation,
 
-//         // step 4
-//         if(this.state.id === '_add'){
-//             return
-//         }else{
-//             ScheduleService.getScheduledFlight(this.state.id).then( (res) =>{
-//                 let scheduledflig = res.data[0];
-//                 this.setState({flightModel: scheduledflig.flight.flightModel,
-//             sourceAirport: scheduledflig.schedule.sourceAirport.airportLocation,
-//             destinationAirport: scheduledflig.schedule.destinationAirport.airportLocation,
-//             arrivalTime: scheduledflig.schedule.arrivalTime,
-//             departureTime: scheduledflig.schedule.departureTime,
-//             arrivalDate: scheduledflig.schedule.arrivalDate
-//                 });
-//             });
-//         }        
-//     }
-//     saveOrUpdateSF = (e) => {
-//         e.preventDefault();
-//         let scheduledflig = {flightModel: this.state.flightModel, sourceAirport: this.state.sourceAirport, destinationAirport: this.state.destinationAirport, arrivalTime: this.state.arrivalTime,
-//                             departureTime: this.state.departureTime, arrivalDate: this.state.arrivalDate};
-//         console.log('scheduledflig => ' + JSON.stringify(scheduledflig));
-
-//         // step 5
-//         if(this.state.id === '_add'){
-//             ScheduleService.createScheduledFlight(scheduledflig).then(res =>{
-//                 this.props.history.push('/scheduledFlight');
-//             });
-//         }else{
-//             ScheduleService.updateScheduledFlight(scheduledflig, this.state.id).then( res => {
-//                 this.props.history.push('/scheduledFlight');
-//             });
-//         }
-//     }
+        // // destinationAirport: values.destinationAirport, 
+        // arrivalTime: this.state.arrivalTime,
+        // departureTime: this.state.departureTime, 
+        // arrivalDate: this.state.arrivalDate,
+        // fares: this.state.fares
+    }
+        
+console.log(JSON.stringify(scheduledF))
+debugger
+    ScheduleService.createScheduledFlight(this.state)
+      .then(() => this.props.history.push('/update'))
+      console.log("hello");
     
-//     changeFlightModelHandler= (event) => {
-//         this.setState({flightModel: event.target.value});
-//     }
-
-//     changeSourceAirHandler= (event) => {
-//         this.setState({sourceAirport: event.target.value});
-//     }
-
-//     changeDestAirHandler= (event) => {
-//         this.setState({destinationAirport: event.target.value});
-//     }
-
-//     changeArrivalTimeHandler= (event) => {
-//         this.setState({arrivalTime: event.target.value});
-//     }
-
-//     changeDeptTimerHandler= (event) => {
-//         this.setState({departureTime: event.target.value});
-//     }
-
-//     changeArrivalDateHandler= (event) => {
-//         this.setState({arrivalDate: event.target.value});
-//     }
-
-//     cancel(){
-//         this.props.history.push('/scheduledFlight');
-//     }
-
-//     getTitle(){
-//         if(this.state.id === '_add'){
-//             return <h3 className="text-center">Add Schedule Flight</h3>
-//         }else{
-//             return <h3 className="text-center">Update Schedule Flight</h3>
-//         }
-//     }
-//     render() {
-//         return (
-//             <div>
-//                 <br></br>
-//                    <div className = "container">
-//                         <div className = "row">
-//                             <div className = "card col-md-6 offset-md-3 offset-md-3">
-//                                 {
-//                                     this.getTitle()
-//                                 }
-//                                 <div className = "card-body">
-//                                     <form>
-//                                         <div className = "form-group">
-//                                             <label> Flight Model: </label>
-//                                             <input placeholder="flightModel" name="flightModel" className="form-control" 
-//                                                 value={this.state.flightModel} onChange={this.changeFlightModelHandler}/>
-//                                         </div>
-//                                         <div className = "form-group">
-//                                             <label> Source Airport: </label>
-//                                             <input placeholder="sourceAirport" name="sourceAirport" className="form-control" 
-//                                                 value={this.state.sourceAirport} onChange={this.changeSourceAirHandler}/>
-//                                         </div>
-//                                         <div className = "form-group">
-//                                             <label> Destination Airport: </label>
-//                                             <input placeholder="Destination Airport" name="destinationAirport" className="form-control" 
-//                                                 value={this.state.destinationAirport} onChange={this.changeDestAirHandler}/>
-//                                         </div>
-//                                         <div className = "form-group">
-//                                             <label> Arrival Time: </label>
-//                                             <input placeholder="Arrival Time" name="arrivalTime" className="form-control" 
-//                                                 value={this.state.arrivalTime} onChange={this.changeArrivalTimeHandler}/>
-//                                         </div>
-//                                         <div className = "form-group">
-//                                             <label> Departure Time: </label>
-//                                             <input placeholder="Departure Time" name="departuretime" className="form-control" 
-//                                                 value={this.state.departureTime} onChange={this.changeDeptTimerHandler}/>
-//                                         </div>
-//                                         <div className = "form-group">
-//                                             <label> Arrival Date: </label>
-//                                             <input placeholder="Arrival Date" name="arrivalDate" className="form-control" 
-//                                                 value={this.state.arrivalDate} onChange={this.changeArrivalDateHandler}/>
-//                                         </div>
-
-//                                         <button className="btn btn-success" onClick={this.saveOrUpdateSF}>Save</button>
-//                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
-//                                     </form>
-//                                 </div>
-//                             </div>
-//                         </div>
-
-//                    </div>
-//             </div>
+}
+//   componentDidMount() {
+//     if (this.state.entryNo === null) {
+//         return
+//       } else {
+//         ScheduleService.getScheduledFlightById(this.state.entryNo)
+//         .then(
+//             response =>
+//                 // console.log(response)
+//                 this.setState({
+                  
+//                   flightModel: response.data.flightModel, 
+//                   sourceAirport: response.data.sourceAirport,
+//                   destinationAirport: response.data.destinationAirport, 
+//                   arrivalTime: response.data.arrivalTime,
+//                   departureTime: response.data.departureTime, 
+//                   arrivalDate: response.data.arrivalDate                })
 //         )
-//     }
-// }
+//       }
+//   }
 
-// export default CreateSFComp;
+onChange= (event) => {
+    this.setState({[event.target.name]: event.target.value});
+    console.log(event.target.value,event.target.name)
+}
+
+  render() {
+    let {flight:{flightId, carrierName, flightModel,seatCapacity},availableSeats, schedule:{sourceAirport:{airportId, airportName,airportLocation},destinationAirport:{airportId1,airportName1,airportLocation1}, arrivalTime, departureTime, arrivalDate}, fares} = this.state.scheduledFlight;
+    // let airportLocation = this.state.airportLocation;
+    return(
+        <div>
+          <h1>Add Schedule Flight</h1>
+          <div className="container">
+            <Formik
+                initialValues={{flightId, carrierName, flightModel,seatCapacity,availableSeats, airportId, airportName,airportLocation,airportId1,airportName1,airportLocation1, arrivalTime, departureTime, arrivalDate, fares}}
+                validate={this.validate}
+                validateOnChange={false}
+                validateOnBlur={false}
+                enableReinitialize={true} 
+                onSubmit={this.onSubmit}>
+              {
+                (props => (
+                    <Form onSubmit={this.onSubmit}>
+                      <ErrorMessage name="sourceAirport" component="div" className="alert alert-warning"/>
+                      <ErrorMessage name="destinationAirport" component="div" className="alert alert-warning"/>
+                      <fieldset className="form-group">
+                        <label>Flight Id</label>
+                        <Field className="form-control" type="text" name="flightId" value= {this.state.scheduledFlight.flight.flightId} onChange={this.onChange} />
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Carrier Name</label>
+                        <Field className="form-control" type="text" name="carrierName" value= {this.state.scheduledFlight.flight.carrierName} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Flight Model</label>
+                        <Field className="form-control" type="text" name="flightModel" value= {this.state.scheduledFlight.flight.flightModel} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Seat Capacity </label>
+                        <Field className="form-control" type="text" name="seatCapacity" value= {this.state.scheduledFlight.flight.seatCapacity} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Available seats </label>
+                        <Field className="form-control" type="text" name="availableSeats" value= {this.state.scheduledFlight.availableSeats} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Source Airport Id </label>
+                        <Field className="form-control" type="text" name="airportId" value= {this.state.scheduledFlight.schedule.sourceAirport.airportId} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Source Airport Name </label>
+                        <Field className="form-control" type="text" name="airportName" value= {this.state.scheduledFlight.schedule.sourceAirport.airportName} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Source Airport Location </label>
+                        <Field className="form-control" type="text" name="airportLocation" value= {this.state.scheduledFlight.schedule.sourceAirport.airportLocation} onChange={this.onChange}/>
+                      </fieldset>
+
+                      <fieldset className="form-group">
+                        <label>Destination Airport Id </label>
+                        <Field className="form-control" type="text" name="airportId1" value= {this.state.scheduledFlight.schedule.destinationAirport.airportId1} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Destination Airport Name </label>
+                        <Field className="form-control" type="text" name="airportName1" value= {this.state.scheduledFlight.schedule.destinationAirport.airportName1} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Destination Airport Location </label>
+                        <Field className="form-control" type="text" name="airportLocation1" value= {this.state.scheduledFlight.schedule.destinationAirport.airportLocation1} onChange={this.onChange}/>
+                      </fieldset>
+
+                      <fieldset className="form-group">
+                        <label>Arrival Time</label>
+                        <Field className="form-control" type="text" name="arrivalTime" value= {this.state.scheduledFlight.schedule.arrivalTime} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Departure Time</label>
+                        <Field className="form-control" type="text" name="departureTime" value= {this.state.scheduledFlight.schedule.departureTime} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Arrival Date</label>
+                        <Field className="form-control" type="text" name="arrivalDate" value= {this.state.scheduledFlight.schedule.arrivalDate} onChange={this.onChange}/>
+                      </fieldset>
+                      <fieldset className="form-group">
+                        <label>Fares </label>
+                        <Field className="form-control" type="text" name="fares" value= {this.state.scheduledFlight.fares} onChange={this.onChange}/>
+                      </fieldset>
+                      <button className="btn btn-success" type="submit">Save</button>
+                    </Form>
+                ))
+              }
+            </Formik>
+          </div>
+          {/* <div>Update Schedule Flight for entryNo - {this.props.match.params.entryNo}</div> */}
+        </div>
+          );
+  }
+}
+export default withRouter(CreateSFComp);

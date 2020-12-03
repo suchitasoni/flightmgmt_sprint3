@@ -4,22 +4,6 @@ import axios from 'axios';
 
 class ScheduleService {
 
-    // getScheduledFlight(){
-    //     return axios.get(Schedule_API_BASE_URL + '/' + 'all');
-    // }
-
-    // createScheduledFlight(scheduledFlight){
-    //     return axios.post(Schedule_API_BASE_URL + '/' + 'newflight', scheduledFlight);
-    // }
-
-    // updateScheduledFlight(scheduledFlight, entryNo){
-    //     return axios.put(Schedule_API_BASE_URL + '/' + 'updateFlight' + '/' + entryNo, scheduledFlight);
-    // }
-
-    // deleteScheduledFlight(scheduledFlightId){
-    //     return axios.delete(Schedule_API_BASE_URL + '/' + 'deleteflight' + '/' + scheduledFlightId);
-    // }
-
     getScheduledFlight(){
         return axios.get( 'http://localhost:8080/scheduledFlight/all');
     }
