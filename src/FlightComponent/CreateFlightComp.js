@@ -27,7 +27,7 @@ class CreateFlightComp extends Component {
       seatCapacity: values.seatCapacity
     }
       FlightService.createFlight(flight)
-      .then(() => this.props.history.push('/updateflight'))
+      .then(() => this.props.history.push('/updateFlight'))
       console.log(values);
     }
 

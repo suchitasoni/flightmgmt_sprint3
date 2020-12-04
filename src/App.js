@@ -1,24 +1,31 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter, Route, Switch} from 'react-router-dom';
+
+import CreateFlightComp from './FlightComponent/CreateFlightComp';
+import UpdateFlightComponent from './FlightComponent/UpdateFlightComp';
+import ListFlight from './FlightComponent/ListFlight';
+
+
+
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+   <Router>
+      <Switch>
+      <Route  path="/createFlight" component={CreateFlightComp}/>
+              <Route exact path="/updateFlight/:flightId" component={UpdateFlightComponent}/>
+
+
+            <Route exact path="/updateFlight" component={()=><div style={{height:"2000px"}}><ListFlight/></div>}/>
+            </Switch>
+            </Router>
+
+      </div>
   );
 }
 

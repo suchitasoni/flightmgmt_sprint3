@@ -23,13 +23,13 @@ class ListFlights extends Component {
     console.log('update')
     // const { history } = this.props;
     // history.push(`/update/${id}`);
-    this.props.history.push('/createflight')
+    this.props.history.push('/createFlight')
     // this.props.history.push(`/update/${id}`)
   }
   updateFlightClicked(flightId) {
     console.log('update' + flightId)
 
-    this.props.history.push(`/updateflight/${flightId}`)
+    this.props.history.push(`/updateFlight/${flightId}`)
   }
   deleteFlightClicked(flightId) {
 

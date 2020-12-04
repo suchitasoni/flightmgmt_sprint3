@@ -14,7 +14,7 @@ class FlightService {
     return axios.put(`http://localhost:8080/flights/updateFlight/${flightId}`, resp);
   }
   createFlight(resp) {
-    return axios.post('http://localhost:8080//flights/newflight', resp);
+    return axios.post('http://localhost:8080/flights/newflight', resp);
   }
 }
 export default new FlightService();
