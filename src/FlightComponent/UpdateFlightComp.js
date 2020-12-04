@@ -26,11 +26,11 @@ class UpdateFlightComp extends Component {
     }
     if (this.state.flightId === null) {
       FlightService.createFlight(flight)
-      .then(() => this.props.history.push('/updateflight'))
+      .then(() => this.props.history.push('/updateFlight'))
       console.log(values);
     } else {
       FlightService.updateFlight(this.state.flightId, flight)
-      .then(() => this.props.history.push('/updateflight'))
+      .then(() => this.props.history.push('/updateFlight'))
       console.log(values);
     }
   }
