@@ -1,122 +1,85 @@
-import React, { Component } from "react";
-import "./Login.css"
+import axios from "axios";
+import React from "react";
 
-//const emailRegex = RegExp(
-//  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-//);
 
-const formValid = ({ formErrors, ...rest }) => {
-  let valid = true;
 
-  // validate form errors being empty
-  Object.values(formErrors).forEach(val => {
-    val.length > 0 && (valid = false);
-  });
-
-  // validate the form was filled out
-  Object.values(rest).forEach(val => {
-    val === null && (valid = false);
-  });
-
-  return valid;
-};
-
-class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      userName: null,
-      password: null,
-      formErrors: {
-        userName: "",
-        password: ""
-      }
-    };
-  }
-
-  handleSubmit = e => {
-    e.preventDefault();
-
-    if (formValid(this.state)) {
-      console.log(`
-          --SUBMITTED--`);
-
-    } else {
-      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
-    }
-  };
-
-  handleChange = e => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    let formErrors = { ...this.state.formErrors };
-
-    switch (name) {
-      case "userName":
-        formErrors.userName =
-          value.length < 3 ? "minimum 3 characters required" : "";
-        break;
-
-      case "password":
-        formErrors.password =
-          value.length < 6 ? "minimum 6 characters required" : "";
-        break;
-      default:
-        break;
-
+class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            userId: '',
+            password: ''
+        }
+        this.changeHandler = this.changeHandler.bind(this);
+        this.submitHandler = this.submitHandler.bind(this);
     }
 
-  this.setState({ formErrors, [name]: value });
-  };
+    changeHandler(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
 
-  render() {
-    const { formErrors } = this.state;
+    submitHandler(e) {
+        e.preventDefault()
+        axios.post('http://localhost:8070/user/validate', this.state)
+            .then(res => {
+                console.log(res)
+                if (res.status === 200) console.log("valid user");
+            })
+            .catch(error => {
+                console.log("Invalid user");
+            })
+    }
+    render() {
+        return (
+            <center>
+                <div style={{ backgroundColor: "lightblue" }}>
+                <form class="text-center border border-light p-5 w-50 h-60" action="#!">
+                        <h2>Sign In</h2>
+                    {/* <p class="h4 mb-4">Sign in</p> */}
+                    <table className="table table-striped">
+                        <tr>
+                            <td>
+                                <span className="badge">User Id</span>
+                            </td>
+                            <td><input type="number" id="defaultLoginFormEmail" name="userId" class="form-control mb-4" placeholder="User Id" onChange={this.changeHandler} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span className="badge">Password</span>
+                            </td>
 
-    return (
-      <div className="wrapper">
-        <div className="form-wrapper">
-          <h1>Login</h1>
-          <form onSubmit={this.handleSubmit} noValidate>
-            <div className="userName">
-              <label htmlFor="userName">User Name</label>
-              <input
-                className={formErrors.userName.length > 0 ? "error" : null}
-                placeholder="User Name"
-                type="text"
-                name="userName"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.userName.length > 0 && (
-                <span className="errorMessage">{formErrors.userName}</span>
-              )}
-            </div>
+                            <td><input type="password" id="defaultLoginFormPassword" name="password" class="form-control mb-4" placeholder="Password" onChange={this.changeHandler} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                            <div class="d-flex justify-content-around">
+                                <div >
+                                    <a href="">Forgot password?</a>
+                                </div>
+                            </div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td align="right">
+                            <button class="btn btn-primary btn-sm" type="button" onClick={this.submitHandler}>Sign in</button>
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+                </div>
 
 
-            <div className="password">
-              <label htmlFor="password">Password</label>
-              <input
-                className={formErrors.password.length > 0 ? "error" : null}
-                placeholder="Password"
-                type="password"
-                name="password"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.password.length > 0 && (
-                <span className="errorMessage">{formErrors.password}</span>
-              )}
-            </div>
-
-            <div className="SignIn">
-              <button type="submit">Sign In</button>
-            </div>
-
-          </form>
-        </div>
-      </div>
-    );
-  }
+            </center>
+        );
+    }
 }
+
 export default Login;
+

@@ -1,183 +1,133 @@
+import axios from "axios";
 import React, { Component } from "react";
-import "./App.css"
-import "./SignUp.css"
 
-
-const emailRegex = RegExp(
-  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-);
-
-const formValid = ({ formErrors, ...rest }) => {
-  let valid = true;
-
-  // validate form errors being empty
-  Object.values(formErrors).forEach(val => {
-    val.length > 0 && (valid = false);
-  });
-
-  // validate the form was filled out
-  Object.values(rest).forEach(val => {
-    val === null && (valid = false);
-  });
-
-  return valid;
-};
-
-class SignUp extends Component {
+class SignUp extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null,
-      mobileNumber: null,
-      formErrors: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        mobileNumber: ""
-      }
+      userName: "",
+      mobileNumber: "",
+      emailid: "",
+      password: "",
+      userId: '',
+      userType:'user',
     };
+    this.onChangeCtrl = this.onChangeCtrl.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
+  onChangeCtrl(event) {
+    var cname = event.target.name;
+    var cval = event.target.value;
+    this.setState({ [cname]: cval });
+  }
 
-    if (formValid(this.state)) {
-      console.log(`
-          --SUBMITTED--`);
-//          First Name: ${this.state.firstName}
-//          Last Name: ${this.state.lastName}
-//          Email: ${this.state.email}
-//          Password: ${this.state.password}
-//          Mobile: ${this.state.mobileNumber}
-    } else {
-      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+  onSubmit = async (event) => {
+    event.preventDefault();
+    var user ={
+      userName:this.state.userName,
+      mobileNumber:this.state.mobileNumber,
+      emailid:this.state.emailid,
+      password:this.state.password,
+      userType:this.state.userType
     }
-  };
-
-  handleChange = e => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    let formErrors = { ...this.state.formErrors };
-
-    switch (name) {
-      case "firstName":
-        formErrors.firstName =
-          value.length < 3 ? "minimum 3 characters required" : "";
-        break;
-      case "lastName":
-        formErrors.lastName =
-          value.length < 3 ? "minimum 3 characters required" : "";
-        break;
-      case "email":
-        formErrors.email = emailRegex.test(value)
-          ? ""
-          : "invalid email address";
-        break;
-      case "password":
-        formErrors.password =
-          value.length < 6 ? "minimum 6 characters required" : "";
-        break;
-      default:
-        break;
-      case "mobileNumber":
-        formErrors.mobileNumber = value.length < 10 ? "minimum 10 digit required" : "";
-    }
-
-  this.setState({ formErrors, [name]: value });
+    let a = JSON.stringify(user);
+    console.log(a);
+    const resp = await axios.post(
+      "http://localhost:8070/user/newuser",
+      user
+    );
+    this.setState({ userId: resp.data.userId });
   };
 
   render() {
-    const { formErrors } = this.state;
-
     return (
-      <div className="wrapper">
-        <div className="form-wrapper">
-          <h1>Create Account</h1>
-          <form onSubmit={this.handleSubmit} noValidate>
-            <div className="firstName">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                className={formErrors.firstName.length > 0 ? "error" : null}
-                placeholder="First Name"
-                type="text"
-                name="firstName"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.firstName.length > 0 && (
-                <span className="errorMessage">{formErrors.firstName}</span>
-              )}
-            </div>
-            <div className="lastName">
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                className={formErrors.lastName.length > 0 ? "error" : null}
-                placeholder="Last Name"
-                type="text"
-                name="lastName"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.lastName.length > 0 && (
-                <span className="errorMessage">{formErrors.lastName}</span>
-              )}
-            </div>
-            <div className="email">
-              <label htmlFor="email">Email</label>
-              <input
-                className={formErrors.email.length > 0 ? "error" : null}
-                placeholder="Email"
-                type="email"
-                name="email"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.email.length > 0 && (
-                <span className="errorMessage">{formErrors.email}</span>
-              )}
-            </div>
-            <div className="password">
-              <label htmlFor="password">Password</label>
-              <input
-                className={formErrors.password.length > 0 ? "error" : null}
-                placeholder="Password"
-                type="password"
-                name="password"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.password.length > 0 && (
-                <span className="errorMessage">{formErrors.password}</span>
-              )}
-            </div>
-            <div className="mobileNumber">
-              <label htmlFor="mobileNumber">Mobile Number</label>
-              <input
-                className={formErrors.mobileNumber.length > 0 ? "error" : null}
-                placeholder="Mobile Number"
-                type="text"
-                name="mobileNumber"
-                noValidate
-                onChange={this.handleChange}
-              />
-              {formErrors.mobileNumber.length > 0 && (
-                <span className="errorMessage">{formErrors.mobileNumber}</span>
-              )}
-            </div>
-            <div className="createAccount">
-              <button type="submit">Create Account</button>
-              <a href="/Login"><small>Already Have an Account?</small></a>
-            </div>
-          </form>
-        </div>
+      <center>
+      <div style={{backgroundColor:"lightyellow"}}>
+          <h1>Sign Up</h1>
+        <form onSubmit={this.onSubmit}>
+          <table className="table table-bordered">
+            <tr>
+              <td>
+                <span className="badge badge-secondary">User Name</span>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="userName"
+                  required="true"
+                  onChange={this.onChangeCtrl}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="badge badge-secondary">Password</span>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="password"
+                  required="true"
+                  onChange={this.onChangeCtrl}
+                  />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="badge badge-secondary">Email Id</span>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="emailid"
+                  required="true"
+                  onChange={this.onChangeCtrl}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="badge badge-secondary">Mobile</span>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  required="true"
+                  onChange={this.onChangeCtrl}
+                />
+              </td>
+            </tr>
+           <tr>
+              <td>
+                <input type="submit" className="btn btn-success" value="Submit" />
+              </td>
+              <td>
+                <input type="reset" name="btn btn-danger" value="Cancel" />
+              </td>
+            </tr>
+            <p className="forgot-password text-right">
+                    Already registered? <a href="./Login" >Login</a>
+                </p>
+          </table>
+        </form>
+        <br />
+        <br />
       </div>
+      </center>
     );
   }
 }
+
+
+// class User {
+//   constructor(userName, mobileNumber, emailid, password) {
+//     this.userName = userName;
+//     this.mobileNumber = mobileNumber;
+//     this.emailid = emailid;
+//     this.password = password;
+//   }
+// }
 
 export default SignUp;
