@@ -19,11 +19,12 @@ class UserRouter extends React.Component {
                             <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                                 <ul className="navbar-nav ml-auto">
                                     <li className="nav-item">
-                                        <Link className="nav-link" to={"/Login"}>Login/</Link>
+                                        <Link className="nav-link" to={"/sign-up"}><h3>Sign up /</h3></Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" to={"/sign-up"}>Sign up</Link>
+                                        <Link className="nav-link" to={"/Login"}><h3>Login</h3></Link>
                                     </li>
+
                                 </ul>
                             </div>
                         </div>

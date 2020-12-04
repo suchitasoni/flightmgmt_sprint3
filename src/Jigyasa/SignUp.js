@@ -7,8 +7,9 @@ class SignUp extends React.Component {
     this.state = {
       userName: "",
       mobileNumber: "",
-      emailid: "",
+      email: "",
       password: "",
+      confirmPassword:"",
       userId: '',
       userType:'user',
     };
@@ -27,8 +28,9 @@ class SignUp extends React.Component {
     var user ={
       userName:this.state.userName,
       mobileNumber:this.state.mobileNumber,
-      emailid:this.state.emailid,
+      email:this.state.email,
       password:this.state.password,
+      confirmPassword:this.state.confirmPassword,
       userType:this.state.userType
     }
     let a = JSON.stringify(user);
@@ -43,7 +45,7 @@ class SignUp extends React.Component {
   render() {
     return (
       <center>
-      <div style={{backgroundColor:"lightyellow"}}>
+      <div style={{ backgroundColor: "DarkGray" }}>
           <h1>Sign Up</h1>
         <form onSubmit={this.onSubmit}>
           <table className="table table-bordered">
@@ -66,8 +68,21 @@ class SignUp extends React.Component {
               </td>
               <td>
                 <input
-                  type="text"
+                  type="password"
                   name="password"
+                  required="true"
+                  onChange={this.onChangeCtrl}
+                  />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="badge badge-secondary">Confirm Password</span>
+              </td>
+              <td>
+                <input
+                  type="password"
+                  name="confirmPassword"
                   required="true"
                   onChange={this.onChangeCtrl}
                   />
@@ -80,7 +95,7 @@ class SignUp extends React.Component {
               <td>
                 <input
                   type="text"
-                  name="emailid"
+                  name="email"
                   required="true"
                   onChange={this.onChangeCtrl}
                 />
@@ -122,10 +137,10 @@ class SignUp extends React.Component {
 
 
 // class User {
-//   constructor(userName, mobileNumber, emailid, password) {
+//   constructor(userName, mobileNumber, email, password) {
 //     this.userName = userName;
 //     this.mobileNumber = mobileNumber;
-//     this.emailid = emailid;
+//     this.email = email;
 //     this.password = password;
 //   }
 // }

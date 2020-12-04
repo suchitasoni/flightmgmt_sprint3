@@ -28,13 +28,13 @@ class Login extends React.Component {
                 if (res.status === 200) console.log("valid user");
             })
             .catch(error => {
-                console.log("Invalid user");
+                console.log("Not a valid user");
             })
     }
     render() {
         return (
             <center>
-                <div style={{ backgroundColor: "lightblue" }}>
+                <div style={{ backgroundColor: "DarkGray" }}>
                 <form class="text-center border border-light p-5 w-50 h-60" action="#!">
                         <h2>Sign In</h2>
                     {/* <p class="h4 mb-4">Sign in</p> */}
@@ -50,32 +50,17 @@ class Login extends React.Component {
                             <td>
                                 <span className="badge">Password</span>
                             </td>
-
                             <td><input type="password" id="defaultLoginFormPassword" name="password" class="form-control mb-4" placeholder="Password" onChange={this.changeHandler} />
                             </td>
                         </tr>
                         <tr>
                             <td align="right">
-                            <div class="d-flex justify-content-around">
-                                <div >
-                                    <a href="">Forgot password?</a>
-                                </div>
-                            </div>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td align="right">
                             <button class="btn btn-primary btn-sm" type="button" onClick={this.submitHandler}>Sign in</button>
-
                             </td>
                         </tr>
-
                     </table>
                 </form>
                 </div>
-
-
             </center>
         );
     }
