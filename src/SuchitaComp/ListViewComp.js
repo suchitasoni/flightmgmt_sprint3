@@ -33,9 +33,9 @@ class ListViewComp extends Component {
                         "arrivalDate": "15-12-2020"
                     },
                     "fares": 4532.0
-    },
+    }
 
-],
+                ],
         }
         this.addScheduledFlight = this.addScheduledFlight.bind(this);
         this.editScheduledFlight = this.editScheduledFlight.bind(this);
@@ -65,7 +65,7 @@ class ListViewComp extends Component {
     }
 
     addScheduledFlight(){
-        this.props.history.push(`/update/-1`);
+        this.props.history.push(`/update/add`);
     }
 
     refreshSF() {

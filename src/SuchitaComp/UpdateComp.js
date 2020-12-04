@@ -7,13 +7,32 @@ class UpdateComp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        entryNo: this.props.match.params.entryNo,
-        flightModel: '',
-        sourceAirport: '',
-        destinationAirport: '',
-        arrivalTime: '',
-        departureTime:'',
-        arrivalDate:''
+        scheduledFlight : {
+            entryNo: this.props.match.params.entryNo,
+            flight: {
+                flightId: '',
+                carrierName: '',
+                flightModel: '',
+                seatCapacity: ''
+            },
+            availableSeats: '',
+            schedule: {
+                sourceAirport: {
+                    airportId: '',
+                    airportName: '',
+                    airportLocation: ''
+                },
+                destinationAirport: {
+                    airportId1: '',
+                    airportName1: '',
+                    airportLocation1: ''
+                },
+                arrivalTime: '',
+                departureTime: '',
+                arrivalDate: ''
+            },
+            fares: ''
+},
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.validate = this.validate.bind(this);
@@ -21,7 +40,6 @@ class UpdateComp extends Component {
   validate(values) {
     // let errors = {airportName: 'Airport Name should be Alphabetical', airportLocation: 'Airport Location should be Alphabetical'}
     let errors = {}
-    // const letters = /^[A-Za-z]+$/;
     const letters = /^[A-Za-z ]+$/;
     if (!values.sourceAirport) {
       errors.sourceAirport = 'Enter a description'
@@ -37,13 +55,30 @@ class UpdateComp extends Component {
   }
   onSubmit(values) {
       let scheduledF = {
-        entryNo: this.state.entryNo,
-        flightModel: values.flightModel, 
-        sourceAirport: values.sourceAirport,
-        destinationAirport: values.destinationAirport, 
-        arrivalTime: values.arrivalTime,
-        departureTime: values.departureTime, 
-        arrivalDate: values.arrivalDate
+        entryNo: this.state.scheduledFlight.entryNo,
+            flight: {
+                flightId: this.state.scheduledFlight.flight.flightId,
+                carrierName: this.state.scheduledFlight.flight.carrierName,
+                flightModel: this.state.scheduledFlight.flight.flightModel,
+                seatCapacity: this.state.scheduledFlight.flight.seatCapacity
+            },
+            availableSeats: this.state.scheduledFlight.availableSeats,
+            schedule: {
+                sourceAirport: {
+                    airportId: this.state.scheduledFlight.schedule.sourceAirport.airportId,
+                    airportName: this.state.scheduledFlight.schedule.sourceAirport.airportName,
+                    airportLocation: this.state.scheduledFlight.schedule.sourceAirport.airportLocation
+                },
+                destinationAirport: {
+                    airportId1: this.state.scheduledFlight.schedule.destinationAirport.airportId,
+                    airportName1: this.state.scheduledFlight.schedule.destinationAirport.airportName,
+                    airportLocation1: this.state.scheduledFlight.schedule.destinationAirport.airportLocation
+                },
+                arrivalTime: this.state.scheduledFlight.schedule.arrivalTime,
+                departureTime: this.state.scheduledFlight.schedule.departureTime,
+                arrivalDate: this.state.scheduledFlight.schedule.arrivalDate
+            },
+            fares: this.state.scheduledFlight.fares
       }
     if (this.state.entryNo === null) {
       ScheduleService.createScheduledFlight(scheduledF)
@@ -70,10 +105,13 @@ class UpdateComp extends Component {
                   destinationAirport: response.data.destinationAirport, 
                   arrivalTime: response.data.arrivalTime,
                   departureTime: response.data.departureTime, 
-                  arrivalDate: response.data.arrivalDate                })
+                  arrivalDate: response.data.arrivalDate                
+            })
         )
       }
   }
+
+    
 
   render() {
     let {flightModel, sourceAirport, destinationAirport, arrivalTime, departureTime, arrivalDate} = this.state;
@@ -88,15 +126,16 @@ class UpdateComp extends Component {
                 validateOnChange={false}
                 validateOnBlur={false}
                 enableReinitialize={true}
-                onSubmit={this.onSubmit}>
+                onSubmit={this.onSubmit}
+            >
               {
                 (props => (
-                    <Form>
+                    <Form onSubmit={this.onSubmit}>
                       <ErrorMessage name="sourceAirport" component="div" className="alert alert-warning"/>
                       <ErrorMessage name="destinationAirport" component="div" className="alert alert-warning"/>
                       <fieldset className="form-group">
                         <label>Flight Model</label>
-                        <Field className="form-control" type="text" name="flightModel"/>
+                        <Field className="form-control" type="text" name="flightModel" />
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Source Airport</label>
@@ -118,7 +157,8 @@ class UpdateComp extends Component {
                         <label>Arrival Date</label>
                         <Field className="form-control" type="text" name="arrivalDate"/>
                       </fieldset>
-                      <button className="btn btn-success" type="submit">Save</button>
+                      <button className="btn btn-success" type="submit">Update</button>
+                      <button className="btn btn-danger" type="cancel">Cancel</button>
                     </Form>
                 ))
               }

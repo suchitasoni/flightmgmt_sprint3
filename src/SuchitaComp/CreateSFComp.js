@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import ScheduleService from "./ScheduleService";
 import { withRouter } from "react-router";
-import moment from 'moment';
 
 class CreateSFComp extends Component {
   constructor(props) {
@@ -122,35 +121,55 @@ onSubmit(e){
     }
         
 console.log(JSON.stringify(scheduledF))
-debugger
     ScheduleService.createScheduledFlight(this.state)
       .then(() => this.props.history.push('/update'))
-      console.log("hello");
+      console.log(e);
     
 }
-//   componentDidMount() {
-//     if (this.state.entryNo === null) {
-//         return
-//       } else {
-//         ScheduleService.getScheduledFlightById(this.state.entryNo)
-//         .then(
-//             response =>
-//                 // console.log(response)
-//                 this.setState({
+  componentDidMount() {
+    if (this.state.entryNo === null) {
+        return
+      } else {
+        ScheduleService.getScheduledFlightById(this.state.entryNo)
+        .then(
+            response =>
+                // console.log(response)
+                this.setState({
                   
-//                   flightModel: response.data.flightModel, 
-//                   sourceAirport: response.data.sourceAirport,
-//                   destinationAirport: response.data.destinationAirport, 
-//                   arrivalTime: response.data.arrivalTime,
-//                   departureTime: response.data.departureTime, 
-//                   arrivalDate: response.data.arrivalDate                })
-//         )
-//       }
-//   }
+                    scheduledFlight : {
+                        entryNo: this.props.match.params.entryNo,
+                        flight: {
+                            flightId: response.data.flightModel,
+                            carrierName: '',
+                            flightModel: '',
+                            seatCapacity: ''
+                        },
+                        availableSeats: '',
+                        schedule: {
+                            sourceAirport: {
+                                airportId: '',
+                                airportName: '',
+                                airportLocation: ''
+                            },
+                            destinationAirport: {
+                                airportId1: '',
+                                airportName1: '',
+                                airportLocation1: ''
+                            },
+                            arrivalTime: '',
+                            departureTime: '',
+                            arrivalDate: ''
+                        },
+                        fares: ''
+                    }               
+            })
+        )
+      }
+  }
 
 onChange= (event) => {
     this.setState({[event.target.name]: event.target.value});
-    console.log(event.target.value,event.target.name)
+    console.log(event.target.name,event.target.value)
 }
 
   render() {
@@ -159,7 +178,7 @@ onChange= (event) => {
     return(
         <div>
           <h1>Add Schedule Flight</h1>
-          <div className="container">
+          <div className="dropdown">
             <Formik
                 initialValues={{flightId, carrierName, flightModel,seatCapacity,availableSeats, airportId, airportName,airportLocation,airportId1,airportName1,airportLocation1, arrivalTime, departureTime, arrivalDate, fares}}
                 validate={this.validate}
@@ -169,12 +188,13 @@ onChange= (event) => {
                 onSubmit={this.onSubmit}>
               {
                 (props => (
-                    <Form onSubmit={this.onSubmit}>
+                    <Form  onSubmit={this.onSubmit}>
                       <ErrorMessage name="sourceAirport" component="div" className="alert alert-warning"/>
                       <ErrorMessage name="destinationAirport" component="div" className="alert alert-warning"/>
                       <fieldset className="form-group">
                         <label>Flight Id</label>
-                        <Field className="form-control" type="text" name="flightId" value= {this.state.scheduledFlight.flight.flightId} onChange={this.onChange} />
+                        <Field className="form-control" type="number" name="flightId" value= {this.state.scheduledFlight.flight.flightId} onChange={this.onChange} />
+                        
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Carrier Name</label>
@@ -184,17 +204,18 @@ onChange= (event) => {
                         <label>Flight Model</label>
                         <Field className="form-control" type="text" name="flightModel" value= {this.state.scheduledFlight.flight.flightModel} onChange={this.onChange}/>
                       </fieldset>
+
                       <fieldset className="form-group">
                         <label>Seat Capacity </label>
-                        <Field className="form-control" type="text" name="seatCapacity" value= {this.state.scheduledFlight.flight.seatCapacity} onChange={this.onChange}/>
+                        <Field className="form-control" type="number" name="seatCapacity" value= {this.state.scheduledFlight.flight.seatCapacity} onChange={this.onChange}/>
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Available seats </label>
-                        <Field className="form-control" type="text" name="availableSeats" value= {this.state.scheduledFlight.availableSeats} onChange={this.onChange}/>
+                        <Field className="form-control" type="number" name="availableSeats" value= {this.state.scheduledFlight.availableSeats} onChange={this.onChange}/>
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Source Airport Id </label>
-                        <Field className="form-control" type="text" name="airportId" value= {this.state.scheduledFlight.schedule.sourceAirport.airportId} onChange={this.onChange}/>
+                        <Field className="form-control" type="number" name="airportId" value= {this.state.scheduledFlight.schedule.sourceAirport.airportId} onChange={this.onChange}/>
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Source Airport Name </label>
@@ -207,7 +228,7 @@ onChange= (event) => {
 
                       <fieldset className="form-group">
                         <label>Destination Airport Id </label>
-                        <Field className="form-control" type="text" name="airportId1" value= {this.state.scheduledFlight.schedule.destinationAirport.airportId1} onChange={this.onChange}/>
+                        <Field className="form-control" type="number" name="airportId1" value= {this.state.scheduledFlight.schedule.destinationAirport.airportId1} onChange={this.onChange}/>
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Destination Airport Name </label>
@@ -228,13 +249,15 @@ onChange= (event) => {
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Arrival Date</label>
-                        <Field className="form-control" type="text" name="arrivalDate" value= {this.state.scheduledFlight.schedule.arrivalDate} onChange={this.onChange}/>
+                        <Field className="form-control" type="number" name="arrivalDate" value= {this.state.scheduledFlight.schedule.arrivalDate} onChange={this.onChange}/>
                       </fieldset>
                       <fieldset className="form-group">
                         <label>Fares </label>
                         <Field className="form-control" type="text" name="fares" value= {this.state.scheduledFlight.fares} onChange={this.onChange}/>
                       </fieldset>
                       <button className="btn btn-success" type="submit">Save</button>
+                      <button className="btn btn-danger" type="cancel">Cancel</button>
+
                     </Form>
                 ))
               }
@@ -245,4 +268,5 @@ onChange= (event) => {
           );
   }
 }
+
 export default withRouter(CreateSFComp);
