@@ -14,9 +14,42 @@ class UpdateFlightComp extends Component {
 
     }
     this.onSubmit = this.onSubmit.bind(this);
-
+    // this.validate = this.validate.bind(this);
   }
+//   validate(values) {
+//     // let errors = {airportName: 'Airport Name should be Alphabetical', airportLocation: 'Airport Location should be Alphabetical'}
+//     let errors = {}
+//     // const letters = /^[A-Za-z]+$/;
+//     const letters = /^[A-Za-z ]+$/;
+//     if (!values.carrierName) {
+//       errors.carrierName = 'Enter a description'
+//     } else if (!values.carrierName.match(letters)) {
+//       errors.carrierName = 'Sorry! Airport name should be alphabetical, please try again!'
+//     }
+//     if (!values.airportLocation) {
+//       errors.flightModel= 'Enter a description'
+//     } else if (!values.airportLocation.match(letters)) {
+//       errors.flightModel= 'Sorry! Airport Location should be alphabetical, please try again!'
+//     }
+//     return errors
+//   }
+validate(values) {
+  //     // let errors = {airportName: 'Airport Name should be Alphabetical', airportLocation: 'Airport Location should be Alphabetical'}
+      let errors = {}
 
+      const letters = /^[A-Za-z ]+$/;
+      const modelno = /^[A-Z0-9]{2}[-][0-9]{3,4}$/;
+
+
+   if (!values.carrierName.match(letters)) {
+        errors.carrierName = 'Sorry! Carrier Name should be alphabetical, please try again!'
+      }
+    if (!values.flightModel.match(modelno)) {
+        errors.flightModel = 'Sorry! Flight Model No.  should be in format AA-1111 or 1A-111, please try again!'
+      }
+
+     return errors
+    }
   onSubmit(values) {
     let flight = {
       flightId: this.state.flightId,
@@ -26,11 +59,15 @@ class UpdateFlightComp extends Component {
     }
     if (this.state.flightId === null) {
       FlightService.createFlight(flight)
-      .then(() => this.props.history.push('/updateFlight'))
+      .then(() => {
+        alert("Flight Added Successfully");
+        this.props.history.push('/updateflight')})
       console.log(values);
     } else {
       FlightService.updateFlight(this.state.flightId, flight)
-      .then(() => this.props.history.push('/updateFlight'))
+      .then(() => {
+        alert("Flight Updated Successfully");
+        this.props.history.push('/updateflight')})
       console.log(values);
     }
   }
@@ -54,7 +91,7 @@ class UpdateFlightComp extends Component {
 
   render() {
     let {carrierName, flightModel,seatCapacity} = this.state;
-
+    // let flightModel= this.state.flightModel;
     return(
       <div>
       <div className="btn-info" style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '90vh'}}>
@@ -64,13 +101,16 @@ class UpdateFlightComp extends Component {
       <Col sm={4}>
         <Formik
             initialValues={{carrierName,flightModel,seatCapacity}}
-
+            validate={this.validate}
+            validateOnChange={false}
+            validateOnBlur={false}
             enableReinitialize={true}
             onSubmit={this.onSubmit}>
           {
             (props => (
                 <Form>
-
+                  <ErrorMessage name="carrierName" component="div" className="alert alert-warning"/>
+                  <ErrorMessage name="flightModel" component="div" className="alert alert-warning"/>
                   <fieldset className="form-group">
 
                      <label htmlFor="carrierName"><span style={{fontFamily:"Serif",fontSize:"1.5em"}}>Enter Carrier Name</span></label>
@@ -90,7 +130,7 @@ class UpdateFlightComp extends Component {
 
                      <label htmlFor="seatCapacity"><span style={{fontFamily:"Serif",fontSize:"1.5em"}}>Enter Seat Capacity</span></label>&nbsp;&nbsp;
 
-                     <Field id="seatCapacity" className="form-control" type="text" name="seatCapacity" required="true"/>
+                     <Field id="seatCapacity" className="form-control" type="text" type="number" size="6" name="seatCapacity" required="true"/>
 
                    </fieldset>
                    <button className="btn btn-danger" type="submit">Save</button>
