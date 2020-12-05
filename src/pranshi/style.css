@@ -1,14 +1,13 @@
 body {
     background-image: url("https://wallpaperaccess.com/full/1556287.png");
     background-size: cover;
-    background-position: center;
+    background-position: left;
 }
 
 .booking-form-box {
-    background-position: center;
-    background-color: skyblue;
+    background-position: left;
     max-width: 400px;
-    border: 2px solid #ced4da;
+    border: 2px solid #000000;
     margin: 5% auto 0;
 }
 
